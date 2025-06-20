@@ -1,0 +1,116 @@
+<html>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-radius: 10px;
+}
+
+</style>
+<body>
+  <h1>b2 Particle Parameters for Conversion Electrons</h1>
+  <p>Comparison of theorectical calculations for b2</p>
+  
+  <table>
+  	<tr>
+  	<th>Source</th>
+    	<th>Atomic Range(Z)</th>
+    	<th>Energy Range</th>
+    	<th>Comments</th>
+    	</tr>
+  	<tr>
+    	<td>Rose</td>
+    	<td>10-92</td>
+    	<td>0.3-5k</td>
+    	<td>consistent sign error in the interference particle parameter hence only pure b2 are adopted</td>
+  	</tr>
+  	<tr>
+  	<td>Sliv</td>
+  	<td>81-92</td>
+  	<td>0.2-2k</td>
+  	<td>limited atomic range</td>
+  	</tr>
+  	<tr>
+  	<td>Purdue</td>
+  	<td>60-96</td>
+  	<td>0.1-1k</td>
+  	<td>limited energy range, calculation includes finite nuclei size and screening effect, data not well scanned</td>
+  	</tr>
+  	<tr>
+  	<td>Caltech</td>
+  	<td>31-103</td>
+  	<td>30-1500keV</td>
+  	<td>large list of data covering every proton number in the range, results are similar to Rose</td>
+  	</tr>
+</table> 
+
+
+
+<table align="center" id="b2Table">
+	  <tr><td align="left">
+	    <label for="sourceSelector" class="right inline"><b>b2 Source:</b></label>
+	    <select id="sourceSelector" onchange="PlotTables()">
+	      <option value="Rose">Rose</option>
+	      <option value="Sliv">Sliv</option>
+	      <option value="Purdue">Purdue</option>
+	      <option value="Caltech">Caltech</option>
+	    </select>
+	  </td></tr>
+	  <tr><td align="left">
+	    <label for="transitionSelector" class="right inline"><b>Transition type:</b></label>
+	    <select id="transitionSelector" onchange="PlotTables()">
+	      <option value="E1">E1</option>
+	      <option value="E2">E2</option>
+	      <option value="M1">M1</option>
+	      <option value="M2">M2</option>
+	      <option value="E1M2">E1M2</option>
+	      <option value="M1E2">M1E2</option>
+	    </select>
+	  </td></tr>
+	  <tr>
+      		<td align="left"><label for="atomicNumber"><b>Atomic Number:</b></label></td>
+      		<td><input id="atomicNumber" type="text" placeholder="Enter value"></td>
+    		</tr>
+	 <tr>
+      		<td align="left"><label for="Energy"><b>Energy(keV):</b></label></td>
+      		<td><input id="Energy" type="text" placeholder="Enter value"></td>
+    		</tr>
+	</table>
+
+	
+<button onclick="displayAtomicNumber()">Calculated b2</button>
+<div id="displayBlock" style="margin-top: 20px; padding: 10px; border: 1px solid #000; border-radius: 6px; width: fit-content;">
+  <p id="outputText" style="margin: 0;"></p>
+</div>
+
+<script>
+
+function displayAtomicNumber() {
+  const atomicNumber = document.getElementById("atomicNumber").value.trim();
+  const inputEnergy = document.getElementById("Energy").value.trim()/511;
+  const b2Source = document.getElementById("sourceSelector").value;
+  const transInput = document.getElementById("transitionSelector").value;
+  const output = document.getElementById("outputText");
+
+  if (atomicNumber && b2Source=="Rose" && transInput=="E1" ) {
+    output.innerHTML = `Estimated b2 value is: <strong>${1-(2.99467+0.00531914*atomicNumber-1.91083E-06*atomicNumber*atomicNumber )/( 1 + ( -0.0259849 + 0.00979738*atomicNumber + -1.52332E-05*atomicNumber*atomicNumber )*inputEnergy + ( 0.519404 + -0.00690479*atomicNumber + 1.29853E-05*atomicNumber*atomicNumber )*inputEnergy*inputEnergy )}</strong>`;
+  } else if(atomicNumber && b2Source=="Rose" && transInput=="E2" ){
+    output.innerHTML = `Estimated b2 value is: <strong>${(0.886352 + 0.00704057*atomicNumber -5.94772E-05*atomicNumber*atomicNumber) + (1.11097 + 0.00393828*atomicNumber + -7.2124E-05*atomicNumber*atomicNumber)*Math.exp(-(0.405355 + 0.00492474*atomicNumber + 0.000135948*atomicNumber*atomicNumber)*inputEnergy)}</strong>`;
+  }else if(atomicNumber && b2Source=="Rose" && transInput=="M1" ){
+  output.innerHTML = `Estimated b2 value is: <strong>${1 - ( -0.172538 + 0.0242002*atomicNumber + 7.23593E-05*atomicNumber*atomicNumber +-2.09992E-06*atomicNumber*atomicNumber*atomicNumber) / ( 1 + ( 1.72879 + 0.00342877*atomicNumber + -0.00040695*atomicNumber*atomicNumber +1.92715E-06*atomicNumber*atomicNumber*atomicNumber)*inputEnergy + ( 0.138227 + -0.00432782*atomicNumber + 1.11273E-06*atomicNumber*atomicNumber+3.10188E-07*atomicNumber*atomicNumber*atomicNumber )*inputEnergy*inputEnergy )}</strong>`;
+  
+  }else if(atomicNumber && b2Source=="Rose" && transInput=="M2" ){
+  output.innerHTML = `Estimated b2 value is: <strong>${1-(0.0853597+-0.0146173*atomicNumber+0.000100801*atomicNumber*atomicNumber )/( 1 + ( 4.02747 +-0.063367*atomicNumber + 0.000241494*atomicNumber*atomicNumber )*inputEnergy + ( -0.174787 + 0.00116221*atomicNumber + 5.75733E-06*atomicNumber*atomicNumber )*inputEnergy*inputEnergy )}</strong>`;
+  }
+  else if(atomicNumber && b2Source=="Rose" && transInput=="E1M2" ){output.innerHTML = `Mixed transition unavailable from Rose's dataset`}
+  else if(atomicNumber && b2Source=="Rose" && transInput=="M1E2" ){output.innerHTML = `Mixed transition unavailable from Rose's dataset`}
+  
+  else{output.innerHTML = `Please enter an atomic number.`;
+  }
+}
+</script>
+
+<!--
+  <img src="https://content.codecademy.com/articles/github-pages-via-web-app/happy-ice-cream.gif" />
+-->
+</body>
+</html>
